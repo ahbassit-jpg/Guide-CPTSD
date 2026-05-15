@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Comprendre le C-PTSD — Un guide humain et accessible pour l'entourage proche">
+<title>Comprendre le C-PTSD — Guide pour l'entourage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --cream:        #faf6f0;
+  --cream-deep:   #f2ebe1;
+  --sand:         #e4d9cc;
+  --sand-dark:    #c8b9a8;
+
+  --terra:        #b86348;
+  --terra-mid:    #d4856c;
+  --terra-light:  #f0c4b4;
+  --terra-xlight: #fdf0ea;
+
+  --sage:         #5e9272;
+  --sage-mid:     #86b496;
+  --sage-light:   #c0d9c8;
+  --sage-xlight:  #eaf4ee;
+
+  --gold:         #b8923a;
+  --gold-mid:     #d4b06a;
+  --gold-light:   #ecdbb0;
+  --gold-xlight:  #fdf7ea;
+
+  --blue:         #4a7fa0;
+  --blue-mid:     #7aadc8;
+  --blue-light:   #b8d4e4;
+  --blue-xlight:  #eaf3f8;
+
+  --plum:         #7a5a80;
+  --plum-mid:     #a888b0;
+  --plum-light:   #d4bcd8;
+  --plum-xlight:  #f5eff6;
+
+  --ink:          #28201c;
+  --mid:          #52403a;
+  --muted:        #8a7870;
+  --subtle:       #b4a89e;
+  --rule:         #ddd0c4;
+  --off-white:    #fffdf9;
+
+  --font-display: 'DM Serif Display', serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-serif:   'Playfair Display', serif;
+
+  --radius-sm:    8px;
+  --radius-md:    16px;
+  --radius-lg:    24px;
+  --radius-xl:    36px;
+
+  --shadow-sm:    0 1px 8px rgba(40,32,28,.06);
+  --shadow-md:    0 4px 24px rgba(40,32,28,.08);
+  --shadow-lg:    0 12px 48px rgba(40,32,28,.10);
+}
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* Grain texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: .4;
+}
+
+img { max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.container {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.container--wide {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33%       { transform: translateY(-8px) rotate(1deg); }
+  66%       { transform: translateY(-4px) rotate(-1deg); }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.05); opacity: .85; }
+}
+@keyframes drawLine {
+  from { stroke-dashoffset: 1000; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════ */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--terra), var(--gold), var(--sage));
+  z-index: 1000;
+  transition: width .1s linear;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(250,246,240,.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s, box-shadow .3s;
+}
+.nav.scrolled {
+  border-bottom-color: var(--rule);
+  box-shadow: 0 2px 20px rgba(40,32,28,.05);
+}
+.nav-brand {
+  font-family: var(--font-display);
+  font-size: .85rem;
+  color: var(--terra);
+  letter-spacing: .02em;
+}
+.nav-links {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 5px 12px;
+  border-radius: 20px;
+  transition: color .2s, background .2s;
+}
+.nav-links a:hover {
+  color: var(--ink);
+  background: var(--cream-deep);
+}
+@media (max-width: 600px) { .nav-links { display: none; } }
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 120px 24px 80px;
+}
+
+/* Organic background shapes */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: floatSlow 12s ease-in-out infinite;
+}
+.blob-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(184,99,72,.12) 0%, transparent 70%);
+  top: -100px; right: -100px;
+  animation-delay: 0s;
+}
+.blob-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(94,146,114,.14) 0%, transparent 70%);
+  bottom: -80px; left: -80px;
+  animation-delay: -4s;
+}
+.blob-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(184,146,58,.10) 0%, transparent 70%);
+  top: 40%; left: 60%;
+  animation-delay: -8s;
+}
+
+/* Decorative rings */
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid;
+  opacity: .12;
+}
+.ring-1 { width:600px; height:600px; border-color: var(--terra); top:-200px; right:-200px; }
+.ring-2 { width:400px; height:400px; border-color: var(--sage); bottom:-150px; left:-100px; }
+
+.hero-content { position: relative; z-index: 1; max-width: 680px; }
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--terra-xlight);
+  border: 1px solid var(--terra-light);
+  color: var(--terra);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+  animation: fadeIn .8s ease both;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--terra);
+  border-radius: 50%;
+  animation: pulse 2s ease infinite;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 7vw, 4.2rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 8px;
+  animation: fadeUp .9s .1s ease both;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--terra);
+}
+
+.hero-sub-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--mid);
+  margin-bottom: 32px;
+  animation: fadeUp .9s .2s ease both;
+}
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 520px;
+  margin: 0 auto 48px;
+  line-height: 1.75;
+  animation: fadeUp .9s .3s ease both;
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--terra);
+  color: white;
+  font-size: .9rem;
+  font-weight: 500;
+  padding: 14px 28px;
+  border-radius: 50px;
+  transition: transform .2s, box-shadow .2s, background .2s;
+  box-shadow: 0 4px 20px rgba(184,99,72,.3);
+  animation: fadeUp .9s .4s ease both;
+}
+.hero-cta:hover {
+  background: var(--terra-mid);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(184,99,72,.35);
+}
+.hero-cta svg { transition: transform .2s; }
+.hero-cta:hover svg { transform: translateY(3px); }
+
+.hero-scroll {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--subtle);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  animation: fadeIn 1s 1s ease both;
+}
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--subtle), transparent);
+  animation: floatSlow 2s ease infinite;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION BASE
+═══════════════════════════════════════════ */
+.section {
+  padding: 80px 0;
+  position: relative;
+}
+.section + .section { border-top: 1px solid var(--rule); }
+
+.section-header {
+  margin-bottom: 48px;
+}
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.section-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .75rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+.section-label {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.section-sub {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
+/* ═══════════════════════════════════════════
+   REASSURANCE
+═══════════════════════════════════════════ */
+.reassurance {
+  position: relative;
+  background: var(--sage-xlight);
+  border-left: 4px solid var(--sage);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 24px 28px;
+  margin: 48px 0;
+}
+.reassurance-tag {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 8px;
+}
+.reassurance p {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--mid);
+  line-height: 1.75;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 1 — CARDS
+═══════════════════════════════════════════ */
+.cards-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 620px) { .cards-2col { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--off-white);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+.card--blue::before   { background: var(--blue); }
+.card--terra::before  { background: var(--terra); }
+.card--sage::before   { background: var(--sage); }
+.card--gold::before   { background: var(--gold); }
+.card--plum::before   { background: var(--plum); }
+
+.card-icon {
+  font-size: 2rem;
+  margin-bottom: 14px;
+  display: block;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.card-body {
+  font-size: .95rem;
+  color: var(--mid);
+  line-height: 1.7;
+}
+.card-bg-blue   { background: var(--blue-xlight); }
+.card-bg-terra  { background: var(--terra-xlight); }
+
+/* ═══════════════════════════════════════════
+   SECTION 2 — BOXES VISUAL
+═══════════════════════════════════════════ */
+.boxes-section {
+  background: linear-gradient(160deg, var(--cream-deep) 0%, var(--cream) 100%);
+}
+
+.boxes-diagram {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 32px 0;
+}
+@media (max-width: 600px) { .boxes-diagram { grid-template-columns: 1fr; } }
+
+.box-card {
+  border-radius: var(--radius-md);
+  padding: 24px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform .3s ease;
+}
+.box-card:hover { transform: translateY(-6px); }
+.box-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  filter: brightness(.97);
+  z-index: -1;
+}
+
+.box-card--open {
+  background: var(--sage-xlight);
+  border: 1.5px solid var(--sage-light);
+}
+.box-card--closed {
+  background: var(--gold-xlight);
+  border: 1.5px solid var(--gold-light);
+}
+.box-card--trigger {
+  background: var(--terra-xlight);
+  border: 1.5px solid var(--terra-light);
+}
+
+.box-emoji {
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+  display: block;
+  animation: floatSlow 6s ease-in-out infinite;
+}
+.box-card--closed .box-emoji { animation-delay: -2s; }
+.box-card--trigger .box-emoji { animation-delay: -4s; }
+
+.box-title {
+  font-weight: 600;
+  font-size: .9rem;
+  margin-bottom: 6px;
+}
+.box-card--open    .box-title { color: var(--sage); }
+.box-card--closed  .box-title { color: var(--gold); }
+.box-card--trigger .box-title { color: var(--terra); }
+
+.box-desc {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.emphasis-box {
+  background: var(--gold-xlight);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 22px 26px;
+  margin: 24px 0;
+}
+.emphasis-box p {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--mid);
+  line-height: 1.75;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 3 — SYMPTOMS GRID
+═══════════════════════════════════════════ */
+.symptoms-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 720px) { .symptoms-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .symptoms-grid { grid-template-columns: 1fr; } }
+
+.symptom-card {
+  background: var(--off-white);
+  border-radius: var(--radius-md);
+  padding: 22px 18px;
+  box-shadow: var(--shadow-sm);
+  border-bottom: 3px solid transparent;
+  transition: transform .25s, box-shadow .25s;
+  cursor: default;
+}
+.symptom-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.symptom-card--blue   { border-bottom-color: var(--blue); }
+.symptom-card--plum   { border-bottom-color: var(--plum); }
+.symptom-card--gold   { border-bottom-color: var(--gold); }
+.symptom-card--terra  { border-bottom-color: var(--terra); }
+.symptom-card--sage   { border-bottom-color: var(--sage); }
+
+.symptom-icon {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  display: block;
+}
+.symptom-title {
+  font-weight: 600;
+  font-size: .9rem;
+  color: var(--ink);
+  margin-bottom: 5px;
+}
+.symptom-desc {
+  font-size: .83rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.symptoms-footer {
+  text-align: center;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: .95rem;
+  color: var(--muted);
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--rule);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 4 — DO / DON'T
+═══════════════════════════════════════════ */
+.dodont-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 600px) { .dodont-grid { grid-template-columns: 1fr; } }
+
+.dodont-col {
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+}
+.dodont-col--do {
+  background: var(--sage-xlight);
+  border: 1.5px solid var(--sage-light);
+}
+.dodont-col--dont {
+  background: var(--terra-xlight);
+  border: 1.5px solid var(--terra-light);
+}
+
+.dodont-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid;
+}
+.dodont-col--do   .dodont-header { border-color: var(--sage-light); }
+.dodont-col--dont .dodont-header { border-color: var(--terra-light); }
+
+.dodont-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .9rem;
+  flex-shrink: 0;
+}
+.dodont-col--do   .dodont-icon { background: var(--sage); color: white; }
+.dodont-col--dont .dodont-icon { background: var(--terra); color: white; }
+
+.dodont-title {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+.dodont-col--do   .dodont-title { color: var(--sage); }
+.dodont-col--dont .dodont-title { color: var(--terra); }
+
+.dodont-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dodont-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: .9rem;
+  color: var(--mid);
+  line-height: 1.55;
+}
+.dodont-mark {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-top: -1px;
+}
+.dodont-col--do   .dodont-mark { color: var(--sage); }
+.dodont-col--dont .dodont-mark { color: var(--terra); }
+
+/* ═══════════════════════════════════════════
+   SECTION 5 — TIMELINE
+═══════════════════════════════════════════ */
+.timeline {
+  position: relative;
+  padding-left: 36px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 20px;
+  bottom: 20px;
+  width: 2px;
+  background: linear-gradient(to bottom,
+    var(--sage-light),
+    var(--blue-light),
+    var(--gold-light),
+    var(--terra-light)
+  );
+  border-radius: 2px;
+}
+
+.timeline-step {
+  position: relative;
+  margin-bottom: 36px;
+  padding-left: 24px;
+}
+.timeline-step:last-child { margin-bottom: 0; }
+
+.timeline-dot {
+  position: absolute;
+  left: -36px;
+  top: 4px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .72rem;
+  font-weight: 700;
+  color: white;
+  z-index: 1;
+  box-shadow: 0 0 0 4px var(--cream);
+}
+
+.timeline-step-inner {
+  background: var(--off-white);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-sm);
+  transition: transform .25s, box-shadow .25s;
+}
+.timeline-step-inner:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+}
+
+.timeline-step-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.timeline-step-body {
+  font-size: .9rem;
+  color: var(--mid);
+  line-height: 1.65;
+}
+
+.trigger-box {
+  background: var(--gold-xlight);
+  border: 1.5px solid var(--gold-light);
+  border-radius: var(--radius-md);
+  padding: 24px 26px;
+  margin-top: 36px;
+  position: relative;
+  overflow: hidden;
+}
+.trigger-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--terra));
+}
+.trigger-box-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.trigger-box-body {
+  font-size: .92rem;
+  color: var(--mid);
+  line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════
+   CLOSING
+═══════════════════════════════════════════ */
+.closing {
+  background: linear-gradient(135deg, var(--terra) 0%, #9e5240 100%);
+  padding: 80px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.closing::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,.06) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.closing::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: -40px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(255,255,255,.06) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.closing-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.closing-emoji {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 24px;
+  animation: floatSlow 4s ease infinite;
+}
+.closing-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  color: white;
+  line-height: 1.25;
+  margin-bottom: 20px;
+}
+.closing-body {
+  font-size: 1rem;
+  color: rgba(255,255,255,.85);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+.closing-body strong {
+  color: white;
+}
+.closing-final {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: rgba(255,255,255,.9);
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,.2);
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+.footer {
+  background: var(--ink);
+  color: rgba(255,255,255,.4);
+  text-align: center;
+  padding: 24px;
+  font-size: .78rem;
+}
+.footer a {
+  color: rgba(255,255,255,.6);
+  border-bottom: 1px solid rgba(255,255,255,.2);
+  transition: color .2s;
+}
+.footer a:hover { color: white; }
+
+/* ═══════════════════════════════════════════
+   BACK TO TOP
+═══════════════════════════════════════════ */
+#back-top {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  width: 44px; height: 44px;
+  background: var(--ink);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .3s, transform .3s, background .2s;
+  z-index: 200;
+  border: none;
+  box-shadow: var(--shadow-md);
+}
+#back-top.visible { opacity: 1; transform: translateY(0); }
+#back-top:hover { background: var(--terra); }
+
+/* ═══════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════ */
+.text-center { text-align: center; }
+.mt-sm { margin-top: 16px; }
+.mt-md { margin-top: 28px; }
+.mt-lg { margin-top: 48px; }
+strong { font-weight: 600; }
+em { font-style: italic; }
+
+/* Fine dividers within sections */
+.rule { border: none; height: 1px; background: var(--rule); margin: 32px 0; }
+
+/* Section background alternation */
+.section--alt { background: var(--cream-deep); }
+
+/* Highlight text */
+.hl-terra { color: var(--terra); }
+.hl-sage  { color: var(--sage); }
+.hl-gold  { color: var(--gold); }
+.hl-blue  { color: var(--blue); }
+
+/* Responsive utilities */
+@media (max-width: 480px) {
+  .section { padding: 56px 0; }
+  .hero { padding: 100px 20px 70px; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- Progress bar -->
+
+<div id="progress-bar"></div>
+
+<!-- Navigation -->
+
+<nav class="nav" id="nav">
+  <div class="nav-brand">C-PTSD · Guide Entourage</div>
+  <ul class="nav-links">
+    <li><a href="#comprendre">Comprendre</a></li>
+    <li><a href="#boites">Les boîtes</a></li>
+    <li><a href="#signaux">Signaux</a></li>
+    <li><a href="#comment">Agir</a></li>
+    <li><a href="#therapie">Thérapie</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- HERO -->
+
+<!-- ═══════════════════════════════════════════ -->
+
+<section class="hero">
+  <div class="hero-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Guide pour l'entourage proche</div>
+    <h1 class="hero-title">Comprendre le<br><em>C-PTSD</em></h1>
+    <p class="hero-sub-title">de votre proche</p>
+    <p class="hero-desc">
+      Des mots simples, des images parlantes et des repères concrets
+      pour être présent·e sans vous perdre.
+    </p>
+    <a href="#comprendre" class="hero-cta">
+      Commencer la lecture
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 3v10M3 8l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+
+  <div class="hero-scroll">
+    <span>Défiler</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- REASSURANCE -->
+
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="container">
+  <div class="reassurance reveal" style="margin-top:64px">
+    <div class="reassurance-tag">Avant tout</div>
+    <p>
+      Le diagnostic de votre proche n'est pas une fatalité.
+      C'est une porte qui s'ouvre — enfin — sur ce qu'il ou elle traverse.
+      Maintenant que vous savez, vous pouvez vraiment aider. 💚
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- SECTION 1 — C'EST QUOI -->
+
+<!-- ═══════════════════════════════════════════ -->
+
+<section class="section" id="comprendre">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <div class="section-num" style="background:var(--blue)">1</div>
+        <span class="section-label" style="color:var(--blue)">Comprendre</span>
+      </div>
+      <h2 class="section-title">C'est quoi le C-PTSD ?</h2>
+      <p class="section-sub">En langage de tous les jours</p>
+    </div>
+
+```
+<div class="cards-2col">
+  <div class="card card--blue card-bg-blue reveal">
+    <span class="card-icon">🧠</span>
+    <h3 class="card-title">Le cerveau qui se protège</h3>
+    <p class="card-body">
+      Quand un patient vit des choses trop difficiles — répétées dans le temps — son cerveau
+      fait quelque chose d'incroyablement intelligent : il met ces expériences douloureuses
+      <strong>dans des boîtes fermées à clé</strong>. Cela lui permet de continuer à
+      fonctionner au quotidien.
+    </p>
+  </div>
+  <div class="card card--terra card-bg-terra reveal">
+    <span class="card-icon">📦</span>
+    <h3 class="card-title">C-PTSD = des boîtes complexes</h3>
+    <p class="card-body">
+      Le <strong>C</strong> signifie « complexe » : les traumatismes ont été nombreux,
+      répétés, souvent installés sur une longue période. Le cerveau a dû ranger encore
+      et encore… jusqu'à ce que le système commence à peser trop lourd.
+    </p>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- SECTION 2 — LES BOITES -->
+
+<!-- ═══════════════════════════════════════════ -->
+
+<section class="section section--alt" id="boites">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <div class="section-num" style="background:var(--gold)">2</div>
+        <span class="section-label" style="color:var(--gold)">L'image des boîtes</span>
+      </div>
+      <h2 class="section-title">Un garde-manger intérieur…<br>qui déborde</h2>
+      <p class="section-sub">Pour visualiser ce qui se passe intérieurement</p>
+    </div>
+
+```
+<p class="card-body reveal" style="max-width:600px; margin-bottom:8px">
+  Imaginez le cerveau comme une grande pièce avec des étagères. Au fil du temps,
+  des boîtes douloureuses ont été rangées là — certaines bien fermées, d'autres qui
+  commencent à fuir.
+</p>
+
+<div class="boxes-diagram">
+  <div class="box-card box-card--open reveal">
+    <span class="box-emoji">✅</span>
+    <div class="box-title">Boîte ouverte</div>
+    <p class="box-desc">Traitée en thérapie, libérée doucement. Ces souvenirs ont perdu leur pouvoir de nuire.</p>
+  </div>
+  <div class="box-card box-card--closed reveal">
+    <span class="box-emoji">🔒</span>
+    <div class="box-title">Boîte fermée</div>
+    <p class="box-desc">Encore scellée, parfois depuis des années. Elle peut fuir ou s'ouvrir un jour.</p>
+  </div>
+  <div class="box-card box-card--trigger reveal">
+    <span class="box-emoji">⚡</span>
+    <div class="box-title">Boîte qui s'ouvre</div>
+    <p class="box-desc">Déclenchée par une odeur, une image, une phrase. Émotion soudaine et intense.</p>
+  </div>
+</div>
+
+<div class="emphasis-box reveal">
+  <p>
+    💡 Quand une boîte se rouvre soudainement, votre proche peut réagir très fort —
+    colère, retrait, panique. Pas parce qu'il ou elle est « difficile », mais parce que
+    quelque chose de très vieux remonte à la surface.
+    <strong>Ce n'est pas un caprice. C'est le cerveau qui se souvient.</strong>
+  </p>
+</div>
+
+<div class="reassurance reveal">
+  <div class="reassurance-tag">À retenir</div>
+  <p>
+    La guérison ne suit pas un calendrier. Certains jours seront meilleurs,
+    d'autres plus lourds. Ce n'est pas un signe d'échec — c'est le chemin
+    normal de la guérison traumatique.
+  </p>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- SECTION 3 — SIGNAUX -->
+
+<!-- ═══════════════════════════════════════════ -->
+
+<section class="section" id="signaux">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <div class="section-num" style="background:var(--plum)">3</div>
+        <span class="section-label" style="color:var(--plum)">Reconnaître</span>
+      </div>
+      <h2 class="section-title">Ce que ça peut ressembler<br>au quotidien</h2>
+      <p class="section-sub">Des signaux à reconnaître avec bienveillance</p>
+    </div>
+
+```
+<div class="symptoms-grid">
+  <div class="symptom-card symptom-card--blue reveal">
+    <span class="symptom-icon">🌊</span>
+    <div class="symptom-title">Émotions qui débordent</div>
+    <p class="symptom-desc">Réactions qui semblent très fortes par rapport à la situation présente.</p>
+  </div>
+  <div class="symptom-card symptom-card--plum reveal">
+    <span class="symptom-icon">🚪</span>
+    <div class="symptom-title">Repli soudain</div>
+    <p class="symptom-desc">Se fermer, disparaître, couper le contact sans explication.</p>
+  </div>
+  <div class="symptom-card symptom-card--gold reveal">
+    <span class="symptom-icon">🌀</span>
+    <div class="symptom-title">Sensation de « flotter »</div>
+    <p class="symptom-desc">Moments de décrochage, regard dans le vide — le cerveau qui s'absente pour se protéger.</p>
+  </div>
+  <div class="symptom-card symptom-card--terra reveal">
+    <span class="symptom-icon">🛡️</span>
+    <div class="symptom-title">Hyper-vigilance</div>
+    <p class="symptom-desc">Toujours en alerte, du mal à se détendre même dans un endroit sûr.</p>
+  </div>
+  <div class="symptom-card symptom-card--sage reveal">
+    <span class="symptom-icon">🪞</span>
+    <div class="symptom-title">Image de soi blessée</div>
+    <p class="symptom-desc">« Je ne vaux rien », « c'est de ma faute » — des croyances installées très tôt.</p>
+  </div>
+  <div class="symptom-card symptom-card--blue reveal">
+    <span class="symptom-icon">💤</span>
+    <div class="symptom-title">Fatigue profonde</div>
+    <p class="symptom-desc">Tenir debout avec tout ça pèse énormément. La fatigue est réelle, pas une excuse.</p>
+  </div>
+</div>
+
+<p class="symptoms-footer reveal">
+  Tout cela n'est pas de la mauvaise volonté. C'est le poids des boîtes.
+</p>
+```
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- SECTION 4 — COMMENT AIDER -->
+
+<!-- ═══════════════════════════════════════════ -->
+
+<section class="section section--alt" id="comment">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <div class="section-num" style="background:var(--sage)">4</div>
+        <span class="section-label" style="color:var(--sage)">Agir</span>
+      </div>
+      <h2 class="section-title">Comment être présent·e<br>sans aggraver les choses</h2>
+      <p class="section-sub">Pas besoin d'être thérapeute — juste un ancrage sûr</p>
+    </div>
+
+```
+<div class="dodont-grid">
+  <div class="dodont-col dodont-col--do reveal">
+    <div class="dodont-header">
+      <div class="dodont-icon">✓</div>
+      <div class="dodont-title">Ce qui aide l'entourage</div>
+    </div>
+    <ul class="dodont-list">
+      <li class="dodont-item">
+        <span class="dodont-mark">✓</span>
+        Offrir une présence stable et prévisible
+      </li>
+      <li class="dodont-item">
+        <span class="dodont-mark">✓</span>
+        Dire <em>« je suis là quand tu es prêt·e »</em>
+      </li>
+      <li class="dodont-item">
+        <span class="dodont-mark">✓</span>
+        Valider ses émotions sans les minimiser ni les amplifier
+      </li>
+      <li class="dodont-item">
+        <span class="dodont-mark">✓</span>
+        Maintenir des routines douces et rassurantes
+      </li>
+      <li class="dodont-item">
+        <span class="dodont-mark">✓</span>
+        Lui rappeler qu'il ou elle n'a rien fait de mal
+      </li>
+      <li class="dodont-item">
+        <span class="dodont-mark">✓</span>
+        Prendre soin de vous aussi 💛
+      </li>
+    </ul>
+  </div>
+
+  <div class="dodont-col dodont-col--dont reveal">
+    <div class="dodont-header">
+      <div class="dodont-icon">✗</div>
+      <div class="dodont-title">Ce qui peut aggraver</div>
+    </div>
+    <ul class="dodont-list">
+      <li class="dodont-item">
+        <span class="dodont-mark">✗</span>
+        Forcer à « en parler » ou rouvrir des sujets douloureux
+      </li>
+      <li class="dodont-item">
+        <span class="dodont-mark">✗</span>
+        Dire <em>« c'est du passé, tu devrais aller mieux »</em>
+      </li>
+      <li class="dodont-item">
+        <span class="dodont-mark">✗</span>
+        Interpréter la colère ou le retrait comme un rejet personnel
+      </li>
+      <li class="dodont-item">
+        <span class="dodont-mark">✗</span>
+        Mettre la pression sur les progrès en thérapie
+      </li>
+      <li class="dodont-item">
+        <span class="dodont-mark">✗</span>
+        Chercher à tout résoudre tout de suite
+      </li>
+      <li class="dodont-item">
+        <span class="dodont-mark">✗</span>
+        Vous sentir coupable de ne pas tout comprendre
+      </li>
+    </ul>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- SECTION 5 — THÉRAPIE -->
+
+<!-- ═══════════════════════════════════════════ -->
+
+<section class="section" id="therapie">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <div class="section-num" style="background:var(--terra)">5</div>
+        <span class="section-label" style="color:var(--terra)">Thérapie</span>
+      </div>
+      <h2 class="section-title">Le rôle de la thérapie</h2>
+      <p class="section-sub">Ce qui se passe quand les boîtes s'ouvrent en sécurité</p>
+    </div>
+
+```
+<div class="timeline">
+  <div class="timeline-step reveal">
+    <div class="timeline-dot" style="background:var(--sage)">1</div>
+    <div class="timeline-step-inner">
+      <div class="timeline-step-title">🏡 Créer un espace sûr</div>
+      <p class="timeline-step-body">
+        Avant d'ouvrir quoi que ce soit, le thérapeute aide votre proche à construire
+        une base stable — des ressources intérieures, des techniques pour s'ancrer
+        dans le présent.
+      </p>
+    </div>
+  </div>
+  <div class="timeline-step reveal">
+    <div class="timeline-dot" style="background:var(--blue)">2</div>
+    <div class="timeline-step-inner">
+      <div class="timeline-step-title">🔑 Approcher les boîtes doucement</div>
+      <p class="timeline-step-body">
+        À son rythme — pas celui de l'entourage ni du thérapeute — votre proche
+        commence à regarder ce qui est dans les boîtes, sans en être submergé·e.
+      </p>
+    </div>
+  </div>
+  <div class="timeline-step reveal">
+    <div class="timeline-dot" style="background:var(--gold)">3</div>
+    <div class="timeline-step-inner">
+      <div class="timeline-step-title">🌱 Intégrer, pas effacer</div>
+      <p class="timeline-step-body">
+        L'objectif n'est pas d'oublier, mais que ces souvenirs n'aient plus le même
+        pouvoir. Ils deviennent une partie de l'histoire — non plus une urgence permanente.
+      </p>
+    </div>
+  </div>
+  <div class="timeline-step reveal">
+    <div class="timeline-dot" style="background:var(--terra)">4</div>
+    <div class="timeline-step-inner">
+      <div class="timeline-step-title">🦋 Retrouver un sens de soi</div>
+      <p class="timeline-step-body">
+        Peu à peu, votre proche peut se redéfinir par qui il ou elle est et veut
+        devenir — pas par ce qu'il ou elle a subi.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="trigger-box reveal">
+  <div class="trigger-box-title">⚡ Les déclencheurs — ce que l'entourage peut faire</div>
+  <p class="trigger-box-body">
+    Parfois une boîte s'ouvre sans prévenir — une musique, une odeur, une phrase anodine.
+    Votre proche n'a pas décidé de réagir ainsi. Son cerveau a simplement reconnu
+    quelque chose d'ancien. En thérapie, on apprend à identifier ces déclencheurs et
+    à les apprivoiser. <strong>L'entourage peut aider en restant calme et présent,
+    sans chercher à expliquer ou à minimiser.</strong>
+  </p>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- CLOSING -->
+
+<!-- ═══════════════════════════════════════════ -->
+
+<section class="closing">
+  <div class="closing-inner">
+    <span class="closing-emoji">🌿</span>
+    <h2 class="closing-title">Votre présence est déjà<br>un cadeau immense</h2>
+    <p class="closing-body">
+      Vous n'avez pas besoin d'avoir toutes les réponses.<br>
+      Vous n'avez pas besoin de tout comprendre.
+    </p>
+    <p class="closing-body">
+      Ce que votre proche a besoin de savoir, c'est qu'il ou elle
+      <strong>n'est plus seul·e</strong> — et que vous êtes là,
+      stable, patient·e, sans condition.
+    </p>
+    <p class="closing-final">
+      La guérison est possible. Elle prend du temps.<br>
+      Et l'entourage fait déjà partie du chemin. 💚
+    </p>
+  </div>
+</section>
+
+<!-- Footer -->
+
+<footer class="footer">
+  <p>Guide à partager librement · Conçu avec soin pour l'entourage des patients C-PTSD</p>
+</footer>
+
+<!-- Back to top -->
+
+<button id="back-top" aria-label="Retour en haut">
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+    <path d="M9 14V4M4 9l5-5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<script>
+/* ─── Progress bar ─────────────────────────────── */
+const progressBar = document.getElementById('progress-bar');
+const nav = document.getElementById('nav');
+const backTop = document.getElementById('back-top');
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = (scrollTop / docH * 100) + '%';
+
+  nav.classList.toggle('scrolled', scrollTop > 40);
+  backTop.classList.toggle('visible', scrollTop > 400);
+});
+
+backTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ─── Scroll reveal ────────────────────────────── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      // stagger siblings
+      const siblings = entry.target.parentElement.querySelectorAll('.reveal:not(.visible)');
+      siblings.forEach((el, idx) => {
+        setTimeout(() => el.classList.add('visible'), idx * 80);
+      });
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ─── Smooth anchor scroll offset ─────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (!target) return;
+    e.preventDefault();
+    window.scrollTo({
+      top: target.getBoundingClientRect().top + window.scrollY - 70,
+      behavior: 'smooth'
+    });
+  });
+});
+</script>
+
+</body>
+</html>
